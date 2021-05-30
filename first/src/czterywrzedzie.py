@@ -4,6 +4,8 @@ import numpy as np
 ROWS=6
 COLUMNS=7
 
+
+
 def tworzenie_tablicy():
     tablica=np.zeros((ROWS,COLUMNS))
     return tablica
@@ -25,27 +27,27 @@ def ktory_wiersz_pusty(tablica,col):
             return i
 
 def czy_wygrana_pion(tablica,moneta):
-    for i in range(COLUMNS-3):
-        for j in range(ROWS):
-            if tablica[i][j] == moneta and tablica[i+3][j]==moneta and tablica[i+2][j]==moneta and tablica[i+1][j] == moneta:
+    for i in range(COLUMNS):
+        for j in range(ROWS-3):
+            if tablica[j][i] == moneta and tablica[j+1][i] == moneta and tablica[j+2][i]==moneta and tablica[j+3][i]==moneta:
                 return True
 
 def czy_wygrana_poziom(tablica,moneta):
-    for i in range(COLUMNS):
-        for j in range(ROWS-3):
-            if tablica[i][j] == moneta and tablica[i][j+3]==moneta and tablica[i][j+2]==moneta and tablica[i][j+1] == moneta:
+    for i in range(COLUMNS-3):
+        for j in range(ROWS):
+            if tablica[j][i] == moneta and tablica[j][i+1] == moneta and tablica[j][i+2]==moneta and tablica[j][i+3]==moneta:
                 return True
 
 def czy_wygrana_skos1(tablica,moneta):
     for i in range(COLUMNS-3):
         for j in range(ROWS-3):
-            if tablica[i][j] == moneta and tablica[i+3][j+3]==moneta and tablica[i+2][j+2]==moneta and tablica[i+1][j+1] == moneta:
+            if tablica[j][i] == moneta and tablica[j+1][i+1] == moneta and tablica[j+2][i+2]==moneta and tablica[j+3][i+3]==moneta:
                 return True
 
 def czy_wygrana_skos2(tablica,moneta):
     for i in range(COLUMNS-3):
         for j in range(3,ROWS):
-            if tablica[i][j] == moneta and tablica[i-3][j+3]==moneta and tablica[i-2][j+2]==moneta and tablica[i-1][j+1] == moneta:
+            if tablica[j][i] == moneta and tablica[j-1][i+1] == moneta and tablica[j-2][i+2]==moneta and tablica[j-3][i+3]==moneta:
                 return True
 
 def czy_wygrana(tablica,moneta):
