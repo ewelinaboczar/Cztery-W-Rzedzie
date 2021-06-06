@@ -2,7 +2,7 @@ class regula:
     def sprawdz_wygrana(self,tablica):
         pass
 
-class czy_wygrana_pion(sprawdz_wygrana):
+class czy_wygrana_pion(regula):
     def sprawdz_wygrana(self,tablica):
         for i in range(COLUMNS):
             aktualny = None
@@ -17,7 +17,7 @@ class czy_wygrana_pion(sprawdz_wygrana):
     def __str__(self):
         return "cztery w pionie"
 
-class czy_wygrana_poziom(sprawdz_wygrana):
+class czy_wygrana_poziom(regula):
     def sprawdz_wygrana(self, tablica):
         for i in range(COLUMNS - 3):
             aktualny = None
@@ -32,7 +32,7 @@ class czy_wygrana_poziom(sprawdz_wygrana):
     def __str__(self):
         return "cztery w poziomie"
 
-class czy_wygrana_skos(sprawdz_wygrana):
+class czy_wygrana_skos(regula):
     def sprawdz_wygrana(self,tablica):
         for i in range(COLUMNS - 3):
             aktualny1 = None
