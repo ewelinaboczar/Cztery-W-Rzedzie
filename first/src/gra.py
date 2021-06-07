@@ -25,7 +25,6 @@ class graj(object):
     def __init__(self, reguly):
         self.runda = 1
         self.zwyciesca = None
-        self.ruchy = list()
         self.tura = self.gracze[0]
         self.sprawdz_kolumne = [0] * 7
         self._reguly = reguly
@@ -78,14 +77,11 @@ class graj(object):
 
         self.bledny_ruch(kolumna)
         wiersz=self.sprawdz_kolumne[kolumna]
-        self.ruchy.append(kolumna)
         self.tablica[wiersz][kolumna]=self.tura
         self.sprawdz_kolumne[kolumna] += 1
 
         if self.ktory_gracz_wygral():
             self.zwyciesca = self.tura
-            self.resetowanie_gry()
-            return
 
         self.ktory_gracz_gra()
 
@@ -106,7 +102,8 @@ class graj(object):
         self.tura=self.gracze[0]
         self.runda=1
         self.zwyciesca=None
-        self.ruchy=list()
+
+
 
 
 

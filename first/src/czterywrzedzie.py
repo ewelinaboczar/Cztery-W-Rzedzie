@@ -21,7 +21,7 @@ class okienko(tk.Tk):
         fontStyle = ('Raleway', 10)
 
         # Tworzenie canvas dla gry
-        self.canvas = tk.Canvas(self, bg="#0055FF")
+        self.canvas = tk.Canvas(self, bg="#00BFFF")
         self.wyswietlanie_tablicy()
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
@@ -36,7 +36,7 @@ class okienko(tk.Tk):
         # Tworzenie dolnego panelu powiadomień
         self.napis1 = tk.Label(panel, bd=1,height=2,font = fontStyle, text="Runda 1", relief=tk.RAISED, bg="lightgrey", fg="black")
         self.napis2 = tk.Label(panel, bd=1,height=2,font = fontStyle, text="Tura gracza X", relief=tk.RAISED, bg="lightgrey", fg="black")
-        self.przycisk_reset_set = tk.Button(panel, bd=1,height=2,font = ('Raleway',8), text="Reset\nZatwierdź wybór reguł", relief=tk.RAISED, bg="lightgrey", fg="black",command=lambda:self.reset())
+        self.przycisk_reset_set = tk.Button(panel, bd=1,height=2,font = ('Raleway',8), text="Reset\nZatwierdź wybór reguł", relief=tk.RAISED, bg="lightgreen", fg="black",command=lambda:self.reset())
 
         panel.columnconfigure(0, weight=1)
         panel.columnconfigure(1, weight=1)
@@ -60,7 +60,7 @@ class okienko(tk.Tk):
         self.plansza = [[None] * COLUMNS for _ in range(ROWS)]
         self.kolka = [[None] * COLUMNS for _ in range(COLUMNS)]
         for i, j in IT.product(range(ROWS), range(COLUMNS)):
-            self.L =self.plansza[ROWS - 1 - i][j] =  tk.Canvas(self.canvas, bg="#0055FF", height=50, width=50, relief="raised",highlightthickness=0)
+            self.L =self.plansza[ROWS - 1 - i][j] =  tk.Canvas(self.canvas, bg="#00BFFF", height=50, width=50, relief="raised",highlightthickness=0)
             padding = 2
             self.id=self.kolka[ROWS - 1 - i][j] = self.L.create_oval((padding, padding, 50 + padding, 50 + padding),fill="lightgrey")
             width = self.L.winfo_reqwidth()
@@ -75,7 +75,7 @@ class okienko(tk.Tk):
 
     def wrzuc_monete(self, kolumna):
         padding = 2
-        kolor=["lightgrey","red","yellow"]
+        kolor=["lightgrey","#DC143C","#FFD700"]
         try:
             self.game.twoj_ruch(kolumna-1)
         except FullColumn as exept:
@@ -100,10 +100,11 @@ class okienko(tk.Tk):
 
         self.napis2.config(text="Tura gracza {}".format('red' if self.game.tura == 'X' else 'yellow'))
         self.napis1.config(text="Runda {}".format(self.game.runda))
-
+        gracz=self.game.tura
         if self.game.ktory_gracz_wygral():
             self.napis2.config(text="Koniec gry")
-            messagebox.showinfo("Wygrana!", f"Wygrał gracz {gracz}")
+            wygrany='red' if gracz == 'X' else 'yellow'
+            messagebox.showinfo("Wygrana!", f"Wygrał gracz {wygrany}")
             return
 
     def ustaw(self):
@@ -112,11 +113,13 @@ class okienko(tk.Tk):
 
     def reset(self):
         self.game = graj(self.ustaw())
+        self.game.resetowanie_gry()
         self.napis1.config(text="Runda 1")
         self.napis2.config(text="Tura gracza red")
         self.wyswietlanie_tablicy()
         self.czy_gramy_dalej=True
         print("reset koniec")
+
 
 
 
