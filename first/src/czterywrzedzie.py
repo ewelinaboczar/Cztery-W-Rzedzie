@@ -19,7 +19,6 @@ class okienko(tk.Tk):
         self.title("Cztery w rzędzie")
         sprawdzanie_wygranej = [czy_wygrana_skos(), czy_wygrana_poziom(), czy_wygrana_pion()]
 
-
         # Tworzenie canvas dla gry
         canvas = tk.Canvas(self, bg="#0055FF")
         self.wyswietlanie_tablicy(canvas)
@@ -57,6 +56,7 @@ class okienko(tk.Tk):
             przyciski_wrzut.columnconfigure(i, weight=1)
         przyciski_wrzut.pack(side=tk.TOP, fill=tk.X)
 
+        messagebox.showinfo("Kto jest kim", f"Gracz X -> red\nGracz Y -> yellow")
         reg = self.jaka_regula(jakie_reguly_combb)
         self.game = graj(reg)
 
@@ -74,8 +74,6 @@ class okienko(tk.Tk):
             canvas.rowconfigure(i, weight=1)
             canvas.columnconfigure(j, weight=1)
             self.L.grid(row=i, column=j, padx=3, pady=3, sticky=tk.E + tk.W + tk.N + tk.S)
-
-
 
     def wrzuc_monete(self, kolumna,canvas):
         padding = 2
@@ -99,18 +97,15 @@ class okienko(tk.Tk):
                     numer = 2
                 elif numer != 'Y' and numer != 'X':
                     numer = 0
-
                 padding = 2
                 self.plansza[i][j].itemconfig(self.id,fill=kolor[numer])
 
-
         self.napis2.config(text="Tura gracza {}".format(self.game.tura))
         self.napis1.config(text="Runda {}".format(self.game.runda))
-        self.napis3.config(text="zwyciesca: {} ".format(self.game.zwyciesca))
         if self.game.ktory_gracz_wygral():
-            self.napis3.config(text="Zwyciezyl gracz nr {}".format(self.game.zwyciesca))
+            self.napis3.config(text="Zwyciezyl gracz {}".format(self.game.zwyciesca))
             self.napis2.config(text="Koniec gry")
-            messagebox.showinfo("Wygrana!", f"Wygrał gracz nr {self.game.zwyciesca}")
+            messagebox.showinfo("Status gry", f"Wygrał gracz {self.game.zwyciesca}")
             return
 
     def jaka_regula(self,jakie_reguly_combb):
@@ -118,9 +113,8 @@ class okienko(tk.Tk):
         return wybor
 
     def reset(self,canvas,jakie_reguly_combb):
-
         self.napis1.config(text="Runda 1")
-        self.napis2.config(text="Tura gracza nr 1")
+        self.napis2.config(text="Tura gracza X")
         self.napis3.config(text="")
         #self.game.resetowanie_gry()
         self.wyswietlanie_tablicy(canvas)

@@ -43,7 +43,10 @@ class graj(object):
         self._reguly = nowa_regula
 
     def ktory_gracz_wygral(self):
-        if self._reguly == "wszystkie":
+        print("ktory_gracz_wygral")
+        print("ktory_gracz_wygral"+self._reguly)
+        if self._reguly == "Wszystkie":
+            print("ktory_gracz_wygral.wszystkie")
             wygrana1 = czy_wygrana_poziom.sprawdz_wygrana(self,tablica=self.tablica)
             wygrana2 = czy_wygrana_pion.sprawdz_wygrana(self,tablica=self.tablica)
             wygrana3 = czy_wygrana_skos.sprawdz_wygrana(self,tablica=self.tablica)
@@ -66,7 +69,8 @@ class graj(object):
             if wygrana1 != "O":
                 return wygrana
 
-    def bledny_ruch(self, kolumna):  # zrobione#
+    def bledny_ruch(self, kolumna):
+        print("bledny_ruch")
         if not 0 <= kolumna <= 6:
             raise MoveOutOfRange
         if self.sprawdz_kolumne[kolumna] == 6:
@@ -74,6 +78,7 @@ class graj(object):
         return True
 
     def twoj_ruch(self, kolumna):
+        print("twoj_ruch")
         if self.zwyciesca:
             return
 
@@ -84,6 +89,7 @@ class graj(object):
         self.sprawdz_kolumne[kolumna] += 1
 
         if self.ktory_gracz_wygral():
+            print("twoj_ruch.if_zwyciesca")
             self.zwyciesca=self.tura
             return
 
@@ -97,6 +103,7 @@ class graj(object):
         print("")
 
     def ktory_gracz_gra(self):
+        print("ktory_gracz_gra")
         self.runda += 1
         self.tura = self.gracze[0] if self.tura == self.gracze[1] else self.gracze[1]
 
