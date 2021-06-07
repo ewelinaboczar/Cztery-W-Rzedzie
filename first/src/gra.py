@@ -6,30 +6,24 @@ import time
 ROWS = 6
 COLUMNS = 7
 
-
+from sprawdzanie_wygranej import czy_wygrana_pion, czy_wygrana_poziom, czy_wygrana_skos
 class GameException(Exception):
     pass
-
-
 class FullColumn(GameException):
     pass
-
-
 class MoveOutOfRange(GameException):
     pass
-
 
 class graj(object):
     tura = None
     runda = None
-    gracze = ["X", "Y"]
+    gracze = ["X","Y"]
     tablica = None
-    zwyciesca = None
-    gracz_skonczyl = None
+    #zwyciesca = None
+
 
     def __init__(self, reguly):
         self.runda = 1
-        self.gracz_skonczyl = False
         self.zwyciesca = None
         self.ruchy = list()
         self.tura = self.gracze[0]
@@ -48,14 +42,29 @@ class graj(object):
     def reguly(self, nowa_regula):
         self._reguly = nowa_regula
 
-    def ktory_gracz_wygral(self, wiersz, kolumna):
-        print(reguly)
-        for i in self._reguly:
-            wygrana = sprawdzanie_wygranej.sprawdz_wygrana(tablica=self.tablica)
-            if wygrana is not None:
-                return True
-            else:
-                return False
+    def ktory_gracz_wygral(self):
+        if self._reguly == "wszystkie":
+            wygrana1 = czy_wygrana_poziom.sprawdz_wygrana(self,tablica=self.tablica)
+            wygrana2 = czy_wygrana_pion.sprawdz_wygrana(self,tablica=self.tablica)
+            wygrana3 = czy_wygrana_skos.sprawdz_wygrana(self,tablica=self.tablica)
+            if wygrana1 != "O":
+                return wygrana1
+            elif wygrana2 != "O":
+                return wygrana1
+            elif wygrana3 != "O":
+                return wygrana1
+        elif self._reguly == "cztery po skosie":
+            wygrana1 = czy_wygrana_skos.sprawdz_wygrana(self,tablica=self.tablica)
+            if wygrana1 != "O":
+                return wygrana
+        elif self._reguly == "cztery w pionie":
+            wygrana1 = czy_wygrana_pion.sprawdz_wygrana(self,tablica=self.tablica)
+            if wygrana1 != "O":
+                return wygrana
+        elif self._reguly == "cztery w poziomie":
+            wygrana1 = czy_wygrana_poziom.sprawdz_wygrana(self,tablica=self.tablica)
+            if wygrana1 != "O":
+                return wygrana
 
     def bledny_ruch(self, kolumna):  # zrobione#
         if not 0 <= kolumna <= 6:
@@ -69,40 +78,50 @@ class graj(object):
             return
 
         self.bledny_ruch(kolumna)
-
-        wiersz = self.sprawdz_kolumne[kolumna]
-
+        wiersz=self.sprawdz_kolumne[kolumna]
         self.ruchy.append(kolumna)
-        self.tablica[wiersz][kolumna] = self.tura
+        self.tablica[wiersz][kolumna]=self.tura
         self.sprawdz_kolumne[kolumna] += 1
 
-        if self.ktory_gracz_wygral(wiersz, kolumna):
-            self.zwyciesca = self.tura
+        if self.ktory_gracz_wygral():
+            self.zwyciesca=self.tura
             return
 
-        if self.runda >= 42:
-            self.gracz_skonczyl = True
-            self.zwyciesca = 'N'
-
         self.ktory_gracz_gra()
-        self.tablica[wiersz][kolumna] = numer
 
-    def drukuj_tablice(self):  # zrobione#
-        os.system(['clear', 'cls'][os.name == 'nt'])
-
+    def drukuj_tablice(self):
         print("\n0 1 2 3 4 5 6")
         print("-- Kolumny --")
         for w in reversed(self.tablica):
             print(" ".join(w))
         print("")
 
-    def ktory_gracz_gra(self):  # zrobione#
-        if self.tura == self.gracze[0]:
-            print("Tura gracza 1")
-            self.tura = self.gracze[1]
-        else:
-            print("Tura gracza 2")
-            self.tura == self.gracze[0]
+    def ktory_gracz_gra(self):
         self.runda += 1
+        self.tura = self.gracze[0] if self.tura == self.gracze[1] else self.gracze[1]
+
+    def resetowanie_gry(self):
+        for i in range(ROWS):
+            self.tablica.append(['O'] * 7)
+        self.tura=self.gracze[0]
+        self.runda=1
+        self.zwyciesca=None
+        self.ruchy=list()
+
+'''x="wszystkie"
+fsdf=True
+app=graj(x)
+while fsdf:
+    d=input("Podaj kolumne")
+    k=int(d)
+    app.twoj_ruch(k)
+    app.drukuj_tablice()
+    print(app.tura)
+    if app.ktory_gracz_wygral():
+        print("koniec")
+        print("zwyciezyl : "+app.zwyciesca)
+        fsdf=False'''
+
+
 
 
