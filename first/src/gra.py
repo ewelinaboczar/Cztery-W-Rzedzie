@@ -7,6 +7,7 @@ ROWS = 6
 COLUMNS = 7
 
 from sprawdzanie_wygranej import czy_wygrana_pion, czy_wygrana_poziom, czy_wygrana_skos
+
 class GameException(Exception):
     pass
 class FullColumn(GameException):
@@ -19,8 +20,7 @@ class graj(object):
     runda = None
     gracze = ["X","Y"]
     tablica = None
-    #zwyciesca = None
-
+    zwyciesca = None
 
     def __init__(self, reguly):
         self.runda = 1
@@ -29,7 +29,6 @@ class graj(object):
         self.tura = self.gracze[0]
         self.sprawdz_kolumne = [0] * 7
         self._reguly = reguly
-
         self.tablica = list()
         for i in range(ROWS):
             self.tablica.append(['O'] * 7)
@@ -43,10 +42,7 @@ class graj(object):
         self._reguly = nowa_regula
 
     def ktory_gracz_wygral(self):
-        print("ktory_gracz_wygral")
-        print("ktory_gracz_wygral"+self._reguly)
         if self._reguly == "Wszystkie":
-            print("ktory_gracz_wygral.wszystkie")
             wygrana1 = czy_wygrana_poziom.sprawdz_wygrana(self,tablica=self.tablica)
             wygrana2 = czy_wygrana_pion.sprawdz_wygrana(self,tablica=self.tablica)
             wygrana3 = czy_wygrana_skos.sprawdz_wygrana(self,tablica=self.tablica)
@@ -59,18 +55,17 @@ class graj(object):
         elif self._reguly == "cztery po skosie":
             wygrana1 = czy_wygrana_skos.sprawdz_wygrana(self,tablica=self.tablica)
             if wygrana1 != "O":
-                return wygrana
+                return wygrana1
         elif self._reguly == "cztery w pionie":
             wygrana1 = czy_wygrana_pion.sprawdz_wygrana(self,tablica=self.tablica)
             if wygrana1 != "O":
-                return wygrana
+                return wygrana1
         elif self._reguly == "cztery w poziomie":
             wygrana1 = czy_wygrana_poziom.sprawdz_wygrana(self,tablica=self.tablica)
             if wygrana1 != "O":
-                return wygrana
+                return wygrana1
 
     def bledny_ruch(self, kolumna):
-        print("bledny_ruch")
         if not 0 <= kolumna <= 6:
             raise MoveOutOfRange
         if self.sprawdz_kolumne[kolumna] == 6:
@@ -78,7 +73,6 @@ class graj(object):
         return True
 
     def twoj_ruch(self, kolumna):
-        print("twoj_ruch")
         if self.zwyciesca:
             return
 
@@ -89,8 +83,8 @@ class graj(object):
         self.sprawdz_kolumne[kolumna] += 1
 
         if self.ktory_gracz_wygral():
-            print("twoj_ruch.if_zwyciesca")
-            self.zwyciesca=self.tura
+            self.zwyciesca = self.tura
+            self.resetowanie_gry()
             return
 
         self.ktory_gracz_gra()
@@ -103,9 +97,8 @@ class graj(object):
         print("")
 
     def ktory_gracz_gra(self):
-        print("ktory_gracz_gra")
         self.runda += 1
-        self.tura = self.gracze[0] if self.tura == self.gracze[1] else self.gracze[1]
+        self.tura = (self.gracze[0] if self.tura == self.gracze[1] else self.gracze[1])
 
     def resetowanie_gry(self):
         for i in range(ROWS):
@@ -115,19 +108,6 @@ class graj(object):
         self.zwyciesca=None
         self.ruchy=list()
 
-'''x="wszystkie"
-fsdf=True
-app=graj(x)
-while fsdf:
-    d=input("Podaj kolumne")
-    k=int(d)
-    app.twoj_ruch(k)
-    app.drukuj_tablice()
-    print(app.tura)
-    if app.ktory_gracz_wygral():
-        print("koniec")
-        print("zwyciezyl : "+app.zwyciesca)
-        fsdf=False'''
 
 
 

@@ -18,74 +18,71 @@ class okienko(tk.Tk):
         super().__init__()
         self.title("Cztery w rzędzie")
         sprawdzanie_wygranej = [czy_wygrana_skos(), czy_wygrana_poziom(), czy_wygrana_pion()]
+        fontStyle = ('Raleway', 10)
 
         # Tworzenie canvas dla gry
-        canvas = tk.Canvas(self, bg="#0055FF")
-        self.wyswietlanie_tablicy(canvas)
-        canvas.pack(fill=tk.BOTH, expand=True)
+        self.canvas = tk.Canvas(self, bg="#0055FF")
+        self.wyswietlanie_tablicy()
+        self.canvas.pack(fill=tk.BOTH, expand=True)
 
         # Tworzenie przycisku rozwijalnego z regulami
         panel = tk.Frame(self)
-        jakie_reguly = ["Wszystkie"] + [str(regula) for regula in sprawdzanie_wygranej]
-        jakie_reguly_combb = ttk.Combobox(panel, width=15, values=jakie_reguly, state='readonly')
-        jakie_reguly_combb.set("Wszystkie")
-        jakie_reguly_combb.grid(row=1, column=4, sticky=tk.E + tk.W)
+        self.jakie_reguly = ["Wszystkie","cztery w pionie","cztery w poziomie","cztery po skosie"]
+        self.jakie_reguly_combb = ttk.Combobox(panel,font = fontStyle, width=15,height=2, values=self.jakie_reguly,postcommand=lambda:self.ustaw(),state='readonly')
+        self.jakie_reguly_combb.set("Wszystkie")
+        self.jakie_reguly_combb.grid(row=1, column=3, sticky=tk.E + tk.W)
         panel.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Tworzenie dolnego panelu powiadomień
-        self.napis1 = tk.Label(panel, bd=1, text="Runda 1", relief=tk.RAISED, bg="lightgrey", fg="black")
-        self.napis2 = tk.Label(panel, bd=1, text="Tura gracza nr 1", relief=tk.RAISED, bg="lightgrey", fg="black")
-        self.napis3 = tk.Label(panel, bd=1, text="", relief=tk.RAISED, bg="white", fg="black")
-        self.napis4 = tk.Button(panel, bd=1, text="Reset", relief=tk.RAISED, bg="lightgrey", fg="black",
-                                command=self.reset(canvas,jakie_reguly_combb))
+        self.napis1 = tk.Label(panel, bd=1,height=2,font = fontStyle, text="Runda 1", relief=tk.RAISED, bg="lightgrey", fg="black")
+        self.napis2 = tk.Label(panel, bd=1,height=2,font = fontStyle, text="Tura gracza X", relief=tk.RAISED, bg="lightgrey", fg="black")
+        self.przycisk_reset_set = tk.Button(panel, bd=1,height=2,font = ('Raleway',8), text="Reset\nZatwierdź wybór reguł", relief=tk.RAISED, bg="lightgrey", fg="black",command=lambda:self.reset())
 
         panel.columnconfigure(0, weight=1)
         panel.columnconfigure(1, weight=1)
         panel.columnconfigure(2, weight=1)
         panel.columnconfigure(3, weight=1)
-        panel.columnconfigure(4, weight=1)
+
         self.napis1.grid(row=1, column=0, sticky=tk.E + tk.W)
         self.napis2.grid(row=1, column=1, sticky=tk.E + tk.W)
-        self.napis3.grid(row=1, column=2, sticky=tk.E + tk.W)
-        self.napis4.grid(row=1, column=3, sticky=tk.E + tk.W)
+        self.przycisk_reset_set.grid(row=1, column=2, sticky=tk.E + tk.W)
 
         # Tworzenie przycisków do wrzucania
         przyciski_wrzut = tk.Frame(self)
-        [tk.Button(przyciski_wrzut, text=str(i + 1), width=10, command=partial(self.wrzuc_monete,i+1,canvas)).grid(column=i,row=0)for i in range(COLUMNS)]
+        [tk.Button(przyciski_wrzut, text=str(i + 1), width=10, command=partial(self.wrzuc_monete,i+1)).grid(column=i,row=0)for i in range(COLUMNS)]
         for i in range(COLUMNS):
             przyciski_wrzut.columnconfigure(i, weight=1)
         przyciski_wrzut.pack(side=tk.TOP, fill=tk.X)
 
-        messagebox.showinfo("Kto jest kim", f"Gracz X -> red\nGracz Y -> yellow")
-        reg = self.jaka_regula(jakie_reguly_combb)
-        self.game = graj(reg)
+        self.reset()
 
-    def wyswietlanie_tablicy(self, canvas):
+    def wyswietlanie_tablicy(self):
         self.plansza = [[None] * COLUMNS for _ in range(ROWS)]
         self.kolka = [[None] * COLUMNS for _ in range(COLUMNS)]
         for i, j in IT.product(range(ROWS), range(COLUMNS)):
-            self.L =self.plansza[ROWS - 1 - i][j] =  tk.Canvas(canvas, bg="#0055FF", height=50, width=50, relief="raised",highlightthickness=0)
+            self.L =self.plansza[ROWS - 1 - i][j] =  tk.Canvas(self.canvas, bg="#0055FF", height=50, width=50, relief="raised",highlightthickness=0)
             padding = 2
             self.id=self.kolka[ROWS - 1 - i][j] = self.L.create_oval((padding, padding, 50 + padding, 50 + padding),fill="lightgrey")
             width = self.L.winfo_reqwidth()
             height = self.L.winfo_reqheight()
             self.L.configure(width=width, height=height)
 
-            canvas.rowconfigure(i, weight=1)
-            canvas.columnconfigure(j, weight=1)
+            self.canvas.rowconfigure(i, weight=1)
+            self.canvas.columnconfigure(j, weight=1)
             self.L.grid(row=i, column=j, padx=3, pady=3, sticky=tk.E + tk.W + tk.N + tk.S)
 
-    def wrzuc_monete(self, kolumna,canvas):
+
+
+    def wrzuc_monete(self, kolumna):
         padding = 2
         kolor=["lightgrey","red","yellow"]
         try:
             self.game.twoj_ruch(kolumna-1)
-            self.napis3.config(text="{}".format(kolumna))
         except FullColumn as exept:
-            self.napis3.config(text="Kolumna {} jest pełna".format(kolumna))
+            messagebox.showinfo("Błąd!", f"Kolumna {kolumna} jest pełna")
             return
         except MoveOutOfRange as exept:
-            self.napis3.config(text="Bledny numer kolumny")
+            messagebox.showinfo("Błąd!", f"Błędny numer kolumny")
             return
 
         for i in range(ROWS):
@@ -97,36 +94,34 @@ class okienko(tk.Tk):
                     numer = 2
                 elif numer != 'Y' and numer != 'X':
                     numer = 0
+
                 padding = 2
                 self.plansza[i][j].itemconfig(self.id,fill=kolor[numer])
 
-        self.napis2.config(text="Tura gracza {}".format(self.game.tura))
+        self.napis2.config(text="Tura gracza {}".format('red' if self.game.tura == 'X' else 'yellow'))
         self.napis1.config(text="Runda {}".format(self.game.runda))
+
         if self.game.ktory_gracz_wygral():
-            self.napis3.config(text="Zwyciezyl gracz {}".format(self.game.zwyciesca))
             self.napis2.config(text="Koniec gry")
-            messagebox.showinfo("Status gry", f"Wygrał gracz {self.game.zwyciesca}")
+            messagebox.showinfo("Wygrana!", f"Wygrał gracz {gracz}")
             return
 
-    def jaka_regula(self,jakie_reguly_combb):
-        wybor = jakie_reguly_combb.get()
+    def ustaw(self):
+        wybor=self.jakie_reguly_combb.get()
         return wybor
 
-    def reset(self,canvas,jakie_reguly_combb):
+    def reset(self):
+        self.game = graj(self.ustaw())
         self.napis1.config(text="Runda 1")
-        self.napis2.config(text="Tura gracza X")
-        self.napis3.config(text="")
-        #self.game.resetowanie_gry()
-        self.wyswietlanie_tablicy(canvas)
-        self.gracz=1
+        self.napis2.config(text="Tura gracza red")
+        self.wyswietlanie_tablicy()
         self.czy_gramy_dalej=True
+        print("reset koniec")
+
 
 
 
 app = okienko()
+app.update()
+app.update_idletasks()
 app.mainloop()
-
-
-
-
-
