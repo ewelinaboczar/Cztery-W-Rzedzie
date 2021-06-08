@@ -68,7 +68,7 @@ class graj(object):
     def czy_remis(self):
         for i in range(ROWS):
             for j in range(COLUMNS):
-                if self.tablica == 'O':
+                if self.tablica[i][j] == 'O':
                     return False
         return True
 
