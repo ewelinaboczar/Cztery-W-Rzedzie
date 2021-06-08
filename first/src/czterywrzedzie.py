@@ -107,6 +107,12 @@ class okienko(tk.Tk):
             messagebox.showinfo("Wygrana!", f"Wygrał gracz {wygrany}")
             return
 
+        if self.game.czy_remis():
+            self.napis2.config(text="Remis")
+            messagebox.showinfo("Remis!", f"Remis")
+            return
+
+
     def ustaw(self):
         wybor=self.jakie_reguly_combb.get()
         return wybor
@@ -120,11 +126,3 @@ class okienko(tk.Tk):
         self.czy_gramy_dalej=True
         print("reset koniec")
 
-
-
-
-
-app = okienko()
-app.update()
-app.update_idletasks()
-app.mainloop()

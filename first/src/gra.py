@@ -27,6 +27,7 @@ class graj(object):
         self.zwyciesca = None
         self.tura = self.gracze[0]
         self.sprawdz_kolumne = [0] * 7
+        self.remis=None
         self._reguly = reguly
         self.tablica = list()
         for i in range(ROWS):
@@ -63,6 +64,13 @@ class graj(object):
             wygrana1 = czy_wygrana_poziom.sprawdz_wygrana(self,tablica=self.tablica)
             if wygrana1 != "O":
                 return wygrana1
+
+    def czy_remis(self):
+        for i in range(ROWS):
+            for j in range(COLUMNS):
+                if self.tablica == 'O':
+                    return False
+        return True
 
     def bledny_ruch(self, kolumna):
         if not 0 <= kolumna <= 6:
